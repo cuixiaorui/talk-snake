@@ -1,16 +1,14 @@
 import { Map } from "./map";
-import { Snake } from "./snake";
-import { Bean, beanManager } from "./bean";
+import { snakes } from "./snake";
+import { Bean, beans } from "./bean";
 
 export class Renderer {
   renderData: number[][];
   map: Map;
-  snake: Snake;
   bean: Bean | undefined;
 
-  constructor(renderData: number[][], map: Map, snake: Snake) {
+  constructor(renderData: number[][], map: Map) {
     this.map = map;
-    this.snake = snake;
     this.renderData = renderData;
     this.initRenderData();
     this.render();
@@ -37,19 +35,20 @@ export class Renderer {
 
   render() {
     // Render the snake
-    for (const position of this.snake.getBody()) {
-      if (
-        position.x >= 0 &&
-        position.x < this.map.width &&
-        position.y >= 0 &&
-        position.y < this.map.height
-      ) {
-        this.renderData[position.y][position.x] = 1;
+    snakes.forEach((snake) => {
+      for (const position of snake.getBody()) {
+        if (
+          position.x >= 0 &&
+          position.x < this.map.width &&
+          position.y >= 0 &&
+          position.y < this.map.height
+        ) {
+          this.renderData[position.y][position.x] = 1;
+        }
       }
-    }
+    });
 
     // Render the bean
-    const beans = beanManager.getBeans();
 
     beans.forEach((bean) => {
       if (

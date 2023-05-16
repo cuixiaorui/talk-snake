@@ -1,21 +1,23 @@
-// timer.ts
-export class Ticker {
-  interval: number;
-  intervalId?: NodeJS.Timer;
+let interval;
+let intervalId: NodeJS.Timer | undefined;
+const tickers: (() => void)[] = [];
 
-  constructor(interval: number) {
-    this.interval = interval;
-  }
-
-  start(callback: () => void) {
-    this.intervalId = setInterval(callback, this.interval);
-  }
-
-  stop() {
-    if (this.intervalId) {
-      clearInterval(this.intervalId);
-      this.intervalId = undefined;
-    }
-  }
+export function startTicker(speed: number = 1000) {
+  interval = speed;
+  intervalId = setInterval(() => {
+    tickers.forEach((callback) => {
+      callback();
+    });
+  }, interval);
 }
 
+export function addTicker(ticker: () => void) {
+  tickers.push(ticker);
+}
+
+export function stopTicker() {
+  if (intervalId) {
+    clearInterval(intervalId);
+    intervalId = undefined;
+  }
+}

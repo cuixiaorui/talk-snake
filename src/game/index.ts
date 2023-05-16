@@ -1,2 +1,2 @@
 export { Direction } from "./snake";
-export { startGame, setSnakeDirection } from "./game";
+export { joinPlayer2 , startGame } from "./game";

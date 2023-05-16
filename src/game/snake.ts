@@ -1,4 +1,4 @@
-import { Bean, beanManager } from "./bean";
+import { Bean, removeBean } from "./bean";
 export enum Direction {
   Up = "Up",
   Down = "Down",
@@ -18,8 +18,7 @@ export class Snake {
 
   constructor(length: number, position: Position) {
     this.length = length;
-    this.direction = Direction.Right;
-    this.body = this.initBody(position);
+    this.direction = Direction.Right; this.body = this.initBody(position);
   }
 
   initBody(position: Position): Position[] {
@@ -79,7 +78,6 @@ export class Snake {
         break;
     }
   }
-
   getLength(): number {
     return this.length;
   }
@@ -108,8 +106,26 @@ export class Snake {
     const newBodyPart = { x: tail.x + deltaX, y: tail.y + deltaY };
     this.body.push(newBodyPart);
 
-    beanManager.removeBean(bean);
+    removeBean(bean);
   }
 }
 
-export default Snake;
+export const snakes: Snake[] = [];
+export function createSnake(length: number, position: Position) {
+  const snake = new Snake(length, position);
+  snakes.push(snake); return snake;
+}
+
+export function clearSnakes() {
+  for (let i = snakes.length - 1; i >= 0; i--) {
+    snakes.splice(i, 1);
+  }
+}
+
+export function getAllSnakeBodies() {
+  let allBodies: Position[] = [];
+  for (let snake of snakes) {
+    allBodies = allBodies.concat(snake.getBody());
+  }
+  return allBodies;
+}

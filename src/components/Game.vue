@@ -5,15 +5,22 @@
         class="w-5 h-5 border border-gray-300"
         v-for="(value, colIndex) in row"
         :key="colIndex"
-        :class="{ 'bg-white': value === 0, 'bg-red-500': value === 1 , 'bg-yellow-500': value === 2}"
+        :class="{
+          'bg-white': value === 0,
+          'bg-red-500': value === 1,
+          'bg-yellow-500': value === 2,
+        }"
       ></div>
+    </div>
+    <div>
+      <button @click="handleJoinPlayer">join player2</button>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { reactive, onMounted, onUnmounted } from "vue";
-import { startGame, setSnakeDirection, Direction } from "../game";
+import { reactive } from "vue";
+import { joinPlayer2, startGame } from "../game";
 
 const renderData = reactive([]);
 startGame(renderData, {
@@ -25,39 +32,18 @@ startGame(renderData, {
       y: 0,
     },
   },
-  bean:{
-    position:{
-      x:1,
-      y:1,
-    }
+  bean: {
+    position: {
+      x: 1,
+      y: 1,
+    },
   },
   speed: 200,
 });
 
-const handleKeyDown = (e: KeyboardEvent) => {
-  switch (e.key) {
-    case "ArrowRight":
-      setSnakeDirection(Direction.Right);
-      break;
-    case "ArrowLeft":
-      setSnakeDirection(Direction.Left);
-      break;
-    case "ArrowUp":
-      setSnakeDirection(Direction.Up);
-      break;
-    case "ArrowDown":
-      setSnakeDirection(Direction.Down);
-      break;
-  }
-};
-
-onMounted(() => {
-  window.addEventListener("keydown", handleKeyDown);
-});
-
-onUnmounted(() => {
-  window.removeEventListener("keydown", handleKeyDown);
-});
+function handleJoinPlayer() {
+  joinPlayer2();
+}
 </script>
 
 <style scoped></style>

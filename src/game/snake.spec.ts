@@ -1,5 +1,12 @@
-import { Bean, beanManager } from "./bean";
-import { Snake, Position, Direction } from "./snake";
+import { generateBean } from "./bean";
+import {
+  Snake,
+  Position,
+  Direction,
+  createSnake,
+  snakes,
+  getAllSnakeBodies,
+} from "./snake";
 import { it, expect, describe, beforeEach } from "vitest";
 
 describe("Snake", () => {
@@ -86,13 +93,13 @@ describe("Snake", () => {
   describe("eat bean", () => {
     it("should return true when the snake's head is on the bean", () => {
       let snake = new Snake(3, { x: 3, y: 0 });
-      const bean = beanManager.generateBean({ x: 3, y: 0 });
+      const bean = generateBean({ x: 3, y: 0 });
       expect(snake.isHeadOn(bean)).toBe(true);
     });
 
     it.only("should increase the snake's length by 1 when eating a bean", () => {
       let snake = new Snake(3, { x: 3, y: 0 });
-      const bean = beanManager.generateBean({ x: 3, y: 0 });
+      const bean = generateBean({ x: 3, y: 0 });
       snake.eatBean(bean);
       expect(snake.getBody()).toEqual([
         { x: 3, y: 0 },
@@ -101,5 +108,27 @@ describe("Snake", () => {
         { x: 0, y: 0 },
       ]);
     });
+  });
+});
+
+describe("SnakeManager", () => {
+  it("should create and add a new snake", () => {
+    const snake = createSnake(3, { x: 0, y: 0 });
+    expect(snakes).toContain(snake);
+  });
+
+  it("should return all bodies of all snakes", () => {
+    createSnake(3, { x: 0, y: 0 });
+    createSnake(2, { x: 5, y: 5 });
+
+    const allBodies = getAllSnakeBodies();
+
+    expect(allBodies).toEqual([
+      { x: 0, y: 0 },
+      { x: -1, y: 0 },
+      { x: -2, y: 0 },
+      { x: 5, y: 5 },
+      { x: 4, y: 5 },
+    ]);
   });
 });

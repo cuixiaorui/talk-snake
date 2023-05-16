@@ -1,8 +1,9 @@
-import { Bean, beanManager } from "./bean";
+import { beans, generateRandomBean } from "./bean";
 import { Map } from "./map";
+import { Player1, Player2, players } from "./player";
 import { Renderer } from "./renderer";
-import { Snake, Direction } from "./snake";
-import { Ticker } from "./ticker";
+import { createSnake, snakes } from "./snake";
+import { startTicker, addTicker } from "./ticker";
 
 interface GameConfig {
   width: number;
@@ -16,35 +17,39 @@ interface GameConfig {
   speed: number;
 }
 
-let snake: Snake;
 export function startGame(renderData: number[][], config: GameConfig) {
-  beanManager.generateBean({
-    x: config.bean.position.x,
-    y: config.bean.position.y,
-  });
   const map = new Map(config.width, config.height);
-  snake = new Snake(3, config.snake.position);
-  const renderer = new Renderer(renderData, map, snake);
-  const ticker = new Ticker(config.speed);
+  joinPlayer1()
+  generateRandomBean(map);
+  const renderer = new Renderer(renderData, map);
+  startTicker(config.speed);
+  addTicker(handleTicker(map, renderer));
+}
 
-  ticker.start(() => {
-    snake.moveForward();
+function handleTicker(map: Map, renderer: Renderer) {
+  return () => {
+    snakes.forEach((snake) => {
+      snake.moveForward();
+    });
 
-    const beans = beanManager.getBeans();
-
-    beans.forEach((bean) => {
-      if (snake.isHeadOn(bean)) {
-        snake.eatBean(bean);
-        // 重新生成一个豆子
-        // TODO 这里的坐标应该是随机生成的
-        beanManager.generateBean({ x: bean.x + 1, y: bean.y + 1 });
-      }
+    snakes.forEach((snake) => {
+      beans.forEach((bean) => {
+        if (snake.isHeadOn(bean)) {
+          snake.eatBean(bean);
+          generateRandomBean(map);
+        }
+      });
     });
 
     renderer.update();
-  });
+  };
+}
+export function joinPlayer1() {
+  const player1 = new Player1("player1", createSnake(3, { x: 3, y: 3 }));
+  players.push(player1);
 }
 
-export const setSnakeDirection = (direction: Direction) => {
-  snake.setDirection(direction);
-};
+export function joinPlayer2() {
+  const player2 = new Player2("player2", createSnake(3, { x: 3, y: 3 }));
+  players.push(player2);
+}

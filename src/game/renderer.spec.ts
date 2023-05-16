@@ -1,18 +1,21 @@
-import { it, expect, describe } from "vitest";
+import { afterEach, it, expect, describe } from "vitest";
 import { Map } from "./map";
-import { Snake } from "./snake";
+import { createSnake, clearSnakes } from "./snake";
 import { Renderer } from "./renderer";
-import { Bean, beanManager } from "./bean";
+import { generateBean } from "./bean";
 
 describe("renderer", () => {
+  afterEach(() => {
+    clearSnakes();
+  });
   it("should rendered map and snake", () => {
     const renderData: any = [];
     const map = new Map(5, 5);
-    const snake = new Snake(3, {
+    createSnake(3, {
       x: 3,
       y: 0,
     });
-    const renderer = new Renderer(renderData, map, snake);
+    const renderer = new Renderer(renderData, map);
 
     expect(renderer.renderData).toEqual([
       [0, 1, 1, 1, 0],
@@ -26,11 +29,11 @@ describe("renderer", () => {
   it("should update render data when snake's data is changed", () => {
     const renderData: any = [];
     const map = new Map(5, 5);
-    const snake = new Snake(3, {
+    const snake = createSnake(3, {
       x: 3,
       y: 0,
     });
-    const renderer = new Renderer(renderData, map, snake);
+    const renderer = new Renderer(renderData, map);
     snake.moveRight();
     renderer.update();
 
@@ -46,12 +49,12 @@ describe("renderer", () => {
   it("should correctly update render data to include the bean", () => {
     const renderData: any = [];
     const map = new Map(5, 5);
-    const snake = new Snake(3, {
+    const snake = createSnake(3, {
       x: 3,
       y: 0,
     });
-    beanManager.generateBean({ x: 1, y: 1 });
-    const renderer = new Renderer(renderData, map, snake);
+    generateBean({ x: 1, y: 1 });
+    const renderer = new Renderer(renderData, map);
     snake.moveRight();
     renderer.update();
 
