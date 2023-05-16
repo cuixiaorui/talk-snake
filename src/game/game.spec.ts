@@ -20,12 +20,6 @@ describe("startGame", () => {
           y: 0,
         },
       },
-      bean: {
-        position: {
-          x: 1,
-          y: 1,
-        },
-      },
       speed: 1000,
     });
 

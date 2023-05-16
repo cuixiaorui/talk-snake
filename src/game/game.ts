@@ -2,7 +2,7 @@ import { beans, generateRandomBean } from "./bean";
 import { Map } from "./map";
 import { Player1, Player2, players } from "./player";
 import { Renderer } from "./renderer";
-import { createSnake, snakes } from "./snake";
+import { Position, createSnake, snakes } from "./snake";
 import { startTicker, addTicker } from "./ticker";
 
 interface GameConfig {
@@ -11,15 +11,12 @@ interface GameConfig {
   snake: {
     position: { x: number; y: number };
   };
-  bean: {
-    position: { x: number; y: number };
-  };
   speed: number;
 }
 
 export function startGame(renderData: number[][], config: GameConfig) {
   const map = new Map(config.width, config.height);
-  joinPlayer1()
+  joinPlayer1(config.snake.position);
   generateRandomBean(map);
   const renderer = new Renderer(renderData, map);
   startTicker(config.speed);
@@ -44,8 +41,8 @@ function handleTicker(map: Map, renderer: Renderer) {
     renderer.update();
   };
 }
-export function joinPlayer1() {
-  const player1 = new Player1("player1", createSnake(3, { x: 3, y: 3 }));
+export function joinPlayer1(position: Position) {
+  const player1 = new Player1("player1", createSnake(3, position));
   players.push(player1);
 }
 
